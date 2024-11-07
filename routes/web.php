@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -21,4 +22,13 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+//supermanアビリティをもつトークンを作成する
+Route::middleware(['auth:sanctum', 'verified'])->get('/token/create/{name}', function (Request $request) {
+    $token = $request->user()->createToken(
+        $request->name,
+        ['superman']
+    );
+    return explode('|', $token->plainTextToken, 2)[1];
 });
